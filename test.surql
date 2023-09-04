@@ -1,0 +1,1 @@
+USE NS dev_ns DB dev_db; DEFINE USER dev_user ON DATABASE PASSWORD 'secret' ROLES OWNER;
