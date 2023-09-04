@@ -6,5 +6,4 @@ namespace RVxLab\SurrealDB\Connections;
 
 interface ConnectionContract
 {
-
 }

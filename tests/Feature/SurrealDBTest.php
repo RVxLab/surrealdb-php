@@ -17,5 +17,5 @@ test('Can connect to SurrealDB', function (string $host, string $connectionClass
     /** @var class-string<ConnectionContract> $connectionClass */
     expect($client->getConnection())->toBeInstanceOf($connectionClass);
 })->with([
-    ['host' => 'http://127.0.0.1:8000', 'expectedConnection' => \RVxLab\SurrealDB\Connections\HttpConnection::class]
+    ['host' => 'http://127.0.0.1:8000', 'expectedConnection' => \RVxLab\SurrealDB\Connections\HttpConnection::class],
 ]);
