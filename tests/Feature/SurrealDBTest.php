@@ -2,21 +2,32 @@
 
 declare(strict_types=1);
 
-use RVxLab\SurrealDB\Connections\ConnectionContract;
+use GuzzleHttp\Client;
+use RVxLab\SurrealDB\Connections\FakeConnection;
+use RVxLab\SurrealDB\Connections\HttpConnection;
 use RVxLab\SurrealDB\SurrealDB;
 
-test('Can connect to SurrealDB', function (string $host, string $connectionClass): void {
-    $client = (new SurrealDB())->connect([
-        'host' => $host,
-        'user' => 'test',
-        'password' => 'secret',
-        'namespace' => null,
+test('Can create a SurrealDB instance with the HTTP connection', function (): void {
+    $surrealDb = SurrealDB::make(new HttpConnection(new Client([
+        'base_uri' => 'http://127.0.0.1:8000',
+    ])));
+
+    expect($surrealDb->connection)->toBeInstanceOf(HttpConnection::class);
+});
+
+test('Forwards the connect/disconnect calls to the underlying connection', function (): void {
+    $connection = new FakeConnection();
+    $client = SurrealDB::make($connection)->connect([
+        'user' => '',
+        'password' => '',
         'database' => null,
+        'namespace' => null,
         'user_scope' => null,
     ]);
 
-    /** @var class-string<ConnectionContract> $connectionClass */
-    expect($client->getConnection())->toBeInstanceOf($connectionClass);
-})->with([
-    ['host' => 'http://127.0.0.1:8000', 'expectedConnection' => \RVxLab\SurrealDB\Connections\HttpConnection::class],
-]);
+    expect($connection->isConnected)->toBeTrue();
+
+    $client->disconnect();
+
+    expect($connection->isConnected)->toBeFalse();
+});

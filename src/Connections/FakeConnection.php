@@ -4,24 +4,29 @@ declare(strict_types=1);
 
 namespace RVxLab\SurrealDB\Connections;
 
-use GuzzleHttp\Client as Guzzle;
-
-class HttpConnection implements ConnectionContract
+/**
+ * @internal
+ */
+class FakeConnection implements ConnectionContract
 {
-    public function __construct(private readonly Guzzle $client)
-    {
-    }
+    public bool $isConnected = false;
 
     /** {@inheritDoc} */
     public function connect(array $connectionConfig): static
     {
+        $this->isConnected = true;
+
         return $this;
     }
-
 
     /** {@inheritDoc} */
     public function disconnect(): void
     {
-        // NOOP
+        $this->isConnected = false;
+    }
+
+    public function __destruct()
+    {
+        $this->disconnect();
     }
 }
