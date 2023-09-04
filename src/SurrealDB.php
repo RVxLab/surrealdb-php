@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RVxLab\SurrealDB;
 
+use GuzzleHttp\Client;
 use RVxLab\SurrealDB\Connections\ConnectionContract;
 use RVxLab\SurrealDB\Connections\HttpConnection;
 
@@ -11,28 +12,23 @@ class SurrealDB
 {
     private ConnectionContract $connection;
 
-    final protected function __construct(
-        public readonly string $host,
-        public readonly string $user,
-        public readonly string $password,
-        public readonly ?string $namespace,
-        public readonly ?string $database,
-    ) {
-    }
-
-    public static function make(string $host, string $user, string $password, ?string $namespace = null, ?string $database = null): static
-    {
-        return (new static($host, $user, $password, $namespace, $database))->connect();
-    }
-
     public function getConnection(): ConnectionContract
     {
         return $this->connection;
     }
 
-    public function connect(): static
+    /** @param array{host: string, user: string, password: string, namespace: ?string, database: ?string, user_scope: ?string} $connectionConfig */
+    public function connect(array $connectionConfig): static
     {
-        $this->connection = new HttpConnection();
+        $this->connection = (new HttpConnection(
+            new Client([ 'base_uri' => $connectionConfig['host'] ])
+        ))->connect([
+            'user' => $connectionConfig['user'],
+            'password' => $connectionConfig['password'],
+            'namespace' => $connectionConfig['namespace'] ?? null,
+            'database' => $connectionConfig['database'] ?? null,
+            'user_scope' => $connectionConfig['user_scope'] ?? null,
+        ]);
 
         return $this;
     }

@@ -6,13 +6,14 @@ use RVxLab\SurrealDB\Connections\ConnectionContract;
 use RVxLab\SurrealDB\SurrealDB;
 
 test('Can connect to SurrealDB', function (string $host, string $connectionClass): void {
-    $client = SurrealDB::make(
-        host: $host,
-        user: 'test',
-        password: 'secret',
-        namespace: 'test',
-        database: 'test',
-    );
+    $client = (new SurrealDB())->connect([
+        'host' => $host,
+        'user' => 'test',
+        'password' => 'secret',
+        'namespace' => null,
+        'database' => null,
+        'user_scope' => null,
+    ]);
 
     /** @var class-string<ConnectionContract> $connectionClass */
     expect($client->getConnection())->toBeInstanceOf($connectionClass);
