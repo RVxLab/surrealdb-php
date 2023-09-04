@@ -1,2 +1,1 @@
-# surrealdb-php
-[WIP] PHP client for SurrealDB
+# SurrealDB for PHP
