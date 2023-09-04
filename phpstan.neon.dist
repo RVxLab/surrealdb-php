@@ -3,3 +3,9 @@ parameters:
   paths:
     - src/
     - tests/
+
+  ignoreErrors:
+    -
+      message: '#^Call to an undefined method Pest.+#'
+      paths:
+        - tests/*
