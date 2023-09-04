@@ -1,0 +1,19 @@
+version: '3'
+services:
+  surrealdb:
+    image: 'surrealdb/surrealdb:${DOCKER_IMAGE_TAG}'
+    ports:
+      - '${DB_HOST_PORT:-8000}:8000'
+    env_file:
+      - '.env'
+    entrypoint:
+      - '/surreal'
+      - 'start'
+      - '--user'
+      - '${DB_USER:-test}'
+      - '--pass'
+      - '${DB_PASSWORD:-secret}'
+      - '--log'
+      - '${DB_LOG_LEVEL:-trace}'
+      - 'memory'
+    tty: true
